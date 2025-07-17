@@ -1,0 +1,322 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Mon API",
+        "contact": {
+            "email": "Aline@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api",
+            "description": "Serveur de l'API"
+        }
+    ],
+    "paths": {
+        "/api/modules/{module}/examens": {
+            "post": {
+                "tags": [
+                    "Examens"
+                ],
+                "summary": "Créer un nouvel examen pour un module spécifique",
+                "description": "Crée un examen complet avec ses questions et options de réponse, et l'associe à un module.",
+                "operationId": "storeExamenForModule",
+                "parameters": [
+                    {
+                        "name": "module",
+                        "in": "path",
+                        "description": "ID du module auquel l'examen sera rattaché",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Données de l'examen à créer",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "titre",
+                                    "type",
+                                    "note_sur",
+                                    "questions"
+                                ],
+                                "properties": {
+                                    "titre": {
+                                        "type": "string",
+                                        "example": "Évaluation finale sur Laravel"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "test",
+                                            "evaluation"
+                                        ],
+                                        "example": "evaluation"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Cette évaluation couvre les concepts de base."
+                                    },
+                                    "statut": {
+                                        "type": "string",
+                                        "enum": [
+                                            "brouillon",
+                                            "publié"
+                                        ],
+                                        "example": "publié"
+                                    },
+                                    "note_sur": {
+                                        "type": "integer",
+                                        "example": 20
+                                    },
+                                    "questions": {
+                                        "type": "array",
+                                        "items": {
+                                            "required": [
+                                                "enonce",
+                                                "type",
+                                                "points"
+                                            ],
+                                            "properties": {
+                                                "enonce": {
+                                                    "type": "string",
+                                                    "example": "Quelle commande crée un contrôleur ?"
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "choix_unique",
+                                                        "choix_multiple",
+                                                        "texte_libre"
+                                                    ]
+                                                },
+                                                "points": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "options": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "required": [
+                                                            "texte_option",
+                                                            "est_correcte"
+                                                        ],
+                                                        "properties": {
+                                                            "texte_option": {
+                                                                "type": "string",
+                                                                "example": "php artisan make:controller"
+                                                            },
+                                                            "est_correcte": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Examen créé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Examen créé avec succès !"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Examen"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    },
+                    "403": {
+                        "description": "Accès non autorisé"
+                    },
+                    "422": {
+                        "description": "Erreur de validation des données"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/roles": {
+            "get": {
+                "tags": [
+                    "Rôles"
+                ],
+                "summary": "Liste des rôles",
+                "operationId": "6c365f4422147d3d10d6a1a243521ad0",
+                "responses": {
+                    "200": {
+                        "description": "Succès"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Examen": {
+                "title": "Examen",
+                "description": "Modèle de données pour un examen",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true,
+                        "example": 1
+                    },
+                    "titre": {
+                        "type": "string",
+                        "example": "Évaluation sur Laravel"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "test",
+                            "evaluation"
+                        ]
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "statut": {
+                        "type": "string",
+                        "enum": [
+                            "brouillon",
+                            "publié",
+                            "archivé"
+                        ]
+                    },
+                    "note_sur": {
+                        "type": "integer"
+                    },
+                    "examinable_id": {
+                        "description": "ID du parent (Module, Formation...)",
+                        "type": "integer"
+                    },
+                    "examinable_type": {
+                        "description": "Type du parent (ex: App\\Models\\Module)",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "questions": {
+                        "description": "La liste des questions de l'examen",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Question"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Option": {
+                "title": "Option",
+                "description": "Modèle de données pour une option de réponse",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true,
+                        "example": 501
+                    },
+                    "texte_option": {
+                        "type": "string",
+                        "example": "Paris"
+                    },
+                    "est_correcte": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object"
+            },
+            "Question": {
+                "title": "Question",
+                "description": "Modèle de données pour une question d'examen",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true,
+                        "example": 101
+                    },
+                    "enonce": {
+                        "type": "string",
+                        "example": "Quelle est la capitale de la France ?"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "choix_unique",
+                            "choix_multiple",
+                            "texte_libre"
+                        ]
+                    },
+                    "points": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "options": {
+                        "description": "La liste des options de réponse (si QCM)",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Option"
+                        }
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Examens",
+            "description": "Endpoints pour la gestion des examens"
+        },
+        {
+            "name": "Rôles",
+            "description": "Rôles"
+        }
+    ]
+}
