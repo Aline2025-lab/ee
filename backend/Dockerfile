@@ -14,16 +14,12 @@ RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
     && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd curl
 
+
 # Installer Composer globalement
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Définir le répertoire de travail
-WORKDIR /app
-
 # Copier les fichiers composer depuis le dossier backend
-COPY backend/composer.json backend/composer.lock ./
-
-
+COPY composer.json composer.lock ./
 # Installer les dépendances PHP via Composer
 RUN composer install --no-dev --optimize-autoloader
 
@@ -35,6 +31,17 @@ RUN php artisan key:generate
 
 # Exécuter les migrations forcées
 RUN php artisan migrate --force
+# Définir le répertoire de travail
+WORKDIR /app
+
+
+
+
+
+
+
+
+
 
 # Exposer le port 8000 pour l’application Laravel
 EXPOSE 8000
