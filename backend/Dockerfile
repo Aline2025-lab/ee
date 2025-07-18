@@ -20,8 +20,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Définir le répertoire de travail
 WORKDIR /app
 
-# Copier uniquement les fichiers nécessaires au build pour optimiser le cache Docker
-COPY composer.json composer.lock ./
+# Copier les fichiers composer depuis le dossier backend
+COPY backend/composer.json backend/composer.lock ./
+
 
 # Installer les dépendances PHP via Composer
 RUN composer install --no-dev --optimize-autoloader
