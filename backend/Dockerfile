@@ -29,7 +29,7 @@ RUN composer install --no-dev --optimize-autoloader
 RUN php artisan key:generate
 
 # Exécuter les migrations
-RUN php artisan migrate --force
+# RUN php artisan migrate --force
 
 # Exposer le port
 EXPOSE 8000
