@@ -1,5 +1,5 @@
 # Utilise l'image officielle PHP avec FPM (FastCGI Process Manager)
-FROM php:8.1-fpm
+FROM php:8.2-fpm 
 
 # Installer les dépendances système et extensions PHP nécessaires pour Laravel
 RUN apt-get update && apt-get install -y \
