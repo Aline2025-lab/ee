@@ -32,7 +32,7 @@ RUN php artisan key:generate
 # RUN php artisan migrate --force
 
 # Exposer le port
-EXPOSE 10000
+EXPOSE ${PORT}
 
 # Lancer le serveur Laravel
 CMD ["sh", "-c", "php artisan serve --host=0.0.0.0  --port=${PORT}"]
